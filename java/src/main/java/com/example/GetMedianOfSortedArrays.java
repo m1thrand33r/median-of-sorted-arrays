@@ -1,6 +1,5 @@
 package com.example;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,23 +11,23 @@ import java.util.stream.Stream;
 public class GetMedianOfSortedArrays {
 
     public static int median(int[] arrA, int[] arrB) {
-        validateInput(arrA, arrB);
+        int n = validateInput(arrA, arrB);
 
-        int n = arrA.length;
-        int[] merged = new int[2 * n];
+        int n2 = 2 * n;
+        int[] merged = new int[n2];
 
         // a counter per array
         int aPtr = 0, bPtr = 0;
         // a counter used with the merged array
         int addedCounter = 0;
-        while (addedCounter < (2 * n)) {
+        while (addedCounter < n2) {
             // if all of the elements from one input have been added, we can just add the rest from the other array
             if (aPtr == n) {
-                while (addedCounter < merged.length) {
+                while (addedCounter < n2) {
                     merged[addedCounter++] = arrB[bPtr++];
                 }
             } else if (bPtr == n) {
-                while (addedCounter < merged.length) {
+                while (addedCounter < n2) {
                     merged[addedCounter++] = arrA[aPtr++];
                 }
             } else {
@@ -49,29 +48,41 @@ public class GetMedianOfSortedArrays {
                     bPtr++;
                 }
             }
+
+            // we can select the median now that the arrays are sorted as we have 2 arrays of size n, we will
+            // always pick element n and n + 1, taking the average, no need to proceed further
+            if (addedCounter == (n + 1)) {
+                return (merged[n - 1] + merged[n]) / 2;
+            }
         }
 
-        // we can select the median now that the arrays are sorted as we have 2 arrays of size n, we will
-        // always pick element n and n + 1, taking the average
-        return (merged[n - 1] + merged[n]) / 2;
+        return -1;
     }
 
     public static int medianIdiomatic(int[] arrA, int[] arrB) {
-        validateInput(arrA, arrB);
+        int n = validateInput(arrA, arrB);
 
         List<Integer> mergedAndSortedArrays = Stream.concat(
                 Arrays.stream(arrA).boxed(), Arrays.stream(arrB).boxed())
                 .sorted()
                 .collect(Collectors.toList());
 
-        int n = arrA.length;
         return (mergedAndSortedArrays.get(n - 1) + mergedAndSortedArrays.get(n)) / 2;
     }
 
-    private static void validateInput(int[] arrA, int[] arrB) {
+    /**
+     * Ensures both arrays are of the same length, returning their length.
+     *
+     * @param arrA array A
+     * @param arrB array B
+     * @return N, the length of each array
+     * @throws IllegalArgumentException is the arrays are of differing length
+     */
+    private static int validateInput(int[] arrA, int[] arrB) {
         if (arrA.length != arrB.length) {
             throw new IllegalArgumentException("Arrays of the same length must be supplied");
         }
+        return arrA.length;
     }
 
 
