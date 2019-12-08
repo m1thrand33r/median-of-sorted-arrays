@@ -13,7 +13,6 @@ public class GetMedianOfCombinedSortedArrays {
     public static int median(int[] arrA, int[] arrB) {
         int n = validateInput(arrA, arrB);
 
-        int n2 = 2 * n;
         // we only need to retain at most 2 array elements when calculating the mean of an array,
         // these are the 2 center elements of our array of length 2n
         int prevEl = -1, currentEl = -1;
@@ -22,10 +21,12 @@ public class GetMedianOfCombinedSortedArrays {
         int aPtr = 0, bPtr = 0;
         // a counter used to track our progress while evaluating the arrays elements
         int progressCounter = 0;
-        while (progressCounter < (n + 1)) {
+        while (true) {
+            int medianRElement = n + 1;
+            if (!(progressCounter < medianRElement)) break;
             if (aPtr == n) {
                 // process remaining arrB values as needed
-                while (progressCounter < n2) {
+                while (progressCounter < medianRElement) {
                     int bVal = arrB[bPtr];
                     if (currentEl > 0) {
                         prevEl = currentEl;
@@ -36,7 +37,7 @@ public class GetMedianOfCombinedSortedArrays {
                 }
             } else if (bPtr == n) {
                 // process remaining arrA values as needed
-                while (progressCounter < n2) {
+                while (progressCounter < medianRElement) {
                     int aVal = arrA[aPtr];
                     if (currentEl > 0) {
                         prevEl = currentEl;
@@ -80,6 +81,23 @@ public class GetMedianOfCombinedSortedArrays {
         return (prevEl + currentEl) / 2;
     }
 
+    /**
+     * A simplified Java 8 approach that you may see in production code that is not
+     * expecting to deal with large volumes of in-memory data.
+     *
+     * Discovery of the runtime complexity means reviewing
+     * - {@link Stream#concat(Stream, Stream)}
+     * - {@link Stream#sorted()}
+     *
+     * This implementation is naive in the fact it attempts to combine the provided
+     * inputs resulting in a potentially large 2n array if each array is of length n.
+     * Merging and sorting is also out of our hands too, although we could slow things
+     * down with a poor comparator implementation supplied to the sort.
+     *
+     * @param arrA input array A
+     * @param arrB input array B
+     * @return the median value of these combined sorted arrays
+     */
     public static int medianIdiomatic(int[] arrA, int[] arrB) {
         int n = validateInput(arrA, arrB);
 
