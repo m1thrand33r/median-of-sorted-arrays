@@ -13,4 +13,12 @@ Median: See See https://en.wikipedia.org/wiki/Median.
   - Looking at the sorted combined array `{1, 2, 12, 13, 15, 17, 26, 30, 38, 45}` we see `{15, 17}` are the median
   - In this case we use the floor of the average `(15 + 17) ? 2 = 16`
 
+## Solution
 
+A Maven project can be found under the `/java` directory, please build using Java 8 and Maven via:
+
+```bash
+mvn clean package
+```
+
+This will also run the single test class within the project.
